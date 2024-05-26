@@ -1,0 +1,63 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: prototype_api
+    container_name: prototype_api
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: db_omzet5_diagram17_privilegesales
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db_omzet5_diagram17_privilegesales.sql:/docker-entrypoint-initdb.d/db_omzet5_diagram17_privilegesales.sql # Memasukkan skrip SQL ke dalam kontainer
+    networks:
+      - laravel
+  
+  pgadmin: #ditambahkan jika ingin mengakses pgadmin melalui web
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    networks:
+      - laravel
+
+  web:
+    image: nginx:latest
+    container_name: nginx_prototype_api
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - laravel
+    depends_on:
+      - app
+
+networks:
+  laravel:
+    driver: bridge
+
+volumes:
+  pgdata:
