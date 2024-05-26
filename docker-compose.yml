@@ -26,7 +26,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./db_omzet5_diagram17_privilegesales.sql:/docker-entrypoint-initdb.d/db_omzet5_diagram17_privilegesales.sql # Memasukkan skrip SQL ke dalam kontainer
+      - ./db_omzet5_diagram17_privilegesales.sql:/docker-entrypoint-initdb.d/db_omzet5_diagram17_privilegesales.sql # Memasukkan skrip SQL ke dalam kontainer    
     networks:
       - laravel
   
